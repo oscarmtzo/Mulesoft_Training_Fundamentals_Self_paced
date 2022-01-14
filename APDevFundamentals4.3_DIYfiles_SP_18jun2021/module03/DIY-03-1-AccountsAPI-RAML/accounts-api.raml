@@ -1,0 +1,44 @@
+#%RAML 1.0
+title: Accounts API
+
+types:
+  AccountType: !include datatypes/AccountType.raml
+  Account: !include datatypes/Account.raml
+
+/accounts:
+  get:
+    description: Retrieve a collection of accounts
+    headers:
+      user_id:
+    queryParameters:
+      account_type:
+        description: Filter based upon account type
+        type: AccountType
+        required: false
+      account_name:
+        description: Filter based upon the name
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: Account
+            examples:
+              output: !include examples/Accounts.raml
+  post:
+    description: Create accounts
+    headers:
+      user_id:
+    body:
+      application/json:
+        type: array
+        items: Account
+        examples:
+          input: !include examples/AccountsPost.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message: Accounts created

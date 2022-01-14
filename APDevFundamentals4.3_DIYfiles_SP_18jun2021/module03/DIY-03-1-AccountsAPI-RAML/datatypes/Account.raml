@@ -1,0 +1,17 @@
+#%RAML 1.0 DataType
+type: object
+properties:
+  id: 
+    type: integer
+    minimum: 1
+    required: false
+  name: string
+  type: 
+    type: !include AccountType.raml
+  address: string
+  air_miles:
+    type: integer
+    minimum: 0
+  created_at: 
+    type: datetime
+    required: false

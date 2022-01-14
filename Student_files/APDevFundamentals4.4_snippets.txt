@@ -1,0 +1,181 @@
+Anypoint Platform Development: Fundamentals 4.4 (ILT) - Snippets
+
+* MODULE 1 **********************************************************
+
+* ProgrammableWeb
+http://www.programmableweb.com/
+
+* MuleSoft Training API portal:
+https://anypoint.mulesoft.com/exchange/portals/muletraining/
+
+* American Flights web service
+http://training4-american-ws.cloudhub.io/api/flights
+
+* American Flights API post body
+{
+  "code": "GQ574",
+  "price": 399,
+  "departureDate": "2016/12/20",
+  "origin": "ORD",
+  "destination": "SFO",
+  "emptySeats": 200,
+  "plane": {"type": "Boeing 747", "totalSeats": 400}
+}
+
+* American Flights API
+http://training4-american-api.cloudhub.io/flights
+
+* American Flights API client_id for APDev fictitious application
+d846d01ea59640108779eaaa532d00ca
+
+* American Flights API client_secret for APDev fictitious application
+F7C5ecA48EBA449399b4B140416849B0
+
+* MODULE 2 **********************************************************
+
+*  American Flights API configuration values:
+	Host: training4-american-api.cloudhub.io
+	Port: 80
+	Base Path: /
+	Protocol: HTTP
+
+* MODULE 3 **********************************************************
+
+* American Flights API description text
+The American Flights API is a system API for operations on the american table in the training database.
+Supported operations
+Get all flights
+Get a flight with a specific ID
+Add a flight
+
+* American Flights API - /{ID} DELETE method
+    delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Flight deleted (but not really)
+
+* MODULE 4 **********************************************************
+
+* MySQL database
+db:
+  host: "iltdb.learn.mulesoft.com"
+  port: "3306"
+  user: "mule"
+  password: "mule"
+  database: "training"
+
+American table: american
+Account table: accounts
+Account list URL:  http://ilt.learn.mulesoft.com/accounts/show 
+or if using mulesoft-training-services.jar application:
+http://localhost:9090/accounts/show.html
+
+* MySQL database as URL and driver name
+URL: jdbc:mysql://iltdb.learn.mulesoft.com:3306/training?user=mule&password=mule
+Driver class name: com.mysql.jdbc.Driver
+
+* Derby database
+URL: jdbc:derby://localhost:1527/memory:training
+Driver class name: org.apache.derby.jdbc.ClientDriver
+
+* SQL input parameter
+{'ID' : attributes.uriParams.ID}
+
+* American Flights API - /flights POST response example
+{"message": "Flight added (but not really)"}
+
+* American Flights API - /{ID} PUT method
+    put:
+      body:
+        application/json:
+          type: AmericanFlight
+          examples:
+            input: !include examples/AmericanFlightNoIDExample.raml
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                message: Flight updated (but not really)
+
+* MODULE 5 **********************************************************
+
+* Your client ID
+
+
+* Your client secret
+
+* MODULE 7 **********************************************************
+
+* Salesforce query
+SELECT Name, LastModifiedDate, BillingPostalCode
+FROM Account
+
+* MODULE 8 **********************************************************
+
+* American RESTful web service properties
+american:
+  host: "training4-american-api-{lastname}.{region}.cloudhub.io"
+  port: "80"
+  basepath: "/"
+  protocol: "HTTP"
+  client_id:
+  client_secret:
+
+* United RESTful web service
+http://ilt.learn.mulesoft.com/united/flights
+or if using mulesoft-training-services.jar application:
+http://localhost:9090/united/flights
+
+* Training web service properties
+training:
+  host: "ilt.learn.mulesoft.com"
+  port: "80"
+  basepath: "/"
+  protocol: "HTTP"
+
+* Delta SOAP web service WSDL
+http://ilt.learn.mulesoft.com/delta?wsdl
+or if using mulesoft-training-services.jar application:
+http://localhost:9191/delta?wsdl
+
+* Delta web service properties
+delta:
+  wsdl: "http://ilt.learn.mulesoft.com/delta?wsdl"
+  service: "TicketServiceService"
+  port: "TicketServicePort"
+or if using mulesoft-training-services.jar application:
+delta:
+  wsdl: "http://localhost:9191/delta?wsdl"
+  service: "DeltaFlightsService"
+  port: "DeltaFlightsServiceImplPort"
+
+* MODULE 9 **********************************************************
+
+* Validation expression
+#[['SFO','LAX','CLE','PDX','PDF'] contains vars.code]
+
+* Validation error message
+'Invalid destination' ++ ' ' ++ (vars.code default ' ')
+
+* MODULE 12 *********************************************************
+
+* MUA Accounts URL
+http://ilt.mulesoft-training.com/accounts/show
+or if using mulesoft-training-services.jar application:
+http://localhost:9090/accounts/show.html
+
+* MODULE 13 *********************************************************
+
+* DataWeave Transformation
+payload map ( payload01 , indexOfPayload01 ) -> {
+    Name: payload01.name,
+    BillingStreet: payload01.street,
+    BillingCity: (payload01.city default ""),
+    BillingState: payload01.state,
+    BillingPostalCode: payload01.postal,
+    BillingCountry: payload01.country
+}
