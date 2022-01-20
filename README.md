@@ -786,3 +786,569 @@ Tasks / Requirements
                             message: Accounts created
     ```
 -------
+## Stages of Building an API
+1. **Build of API implementation**: The API Specification (RAML) created before, can be used in this stage to build the API implementation.
+2. **Testing the API implementation**: a rest client like Adavanced REST Client can be used to call the API implementation, also cna be used Postman as well as others.
+
+    ----
+    - Later in this module the following topics will be covered.
+        - Using Anypoint Studio to build, run, and test Mule applications.
+        - Use a connector to connect to databases.
+        - Use the graphical DataWeave editor to transform data.
+        - Create RESTful interfaces for applications from API specifications.
+        - Connect API interfaces to API implementations.
+        - Syncronize changes to API specifications between Anypoint Studio and Anypoint Platform.
+## Mule 4 applications and flows anatomy
+![](https://ingenierobinario.com/wp-content/uploads/2020/10/MuleFlow.png)
+- Mule applications *receive events*, process them, and route them to other endpoints.
+- Mule applications accept and process a Mule event through a series of Mule events processors plugged together in a flow with
+    - **Mule event source** defines how the flow will be triggered 
+    - **Mule event processor** specify how to transform, filter, enrich, and process the event data.
+    
+    ### Mule 4 event structure
+    ![](https://i1.wp.com/thebasictechinfo.com/wp-content/uploads/2021/05/mule_soft_event.png?resize=841%2C412&ssl=1) *Mule 4 event structure*
+
+    - Mule event contains:
+        - Mule message object
+            - Attributes: contain metadata such as the ones found at the header of an http request, like http method, query parameters and so on.
+            - Payload: will contain the actual data you are about to process and that the end user can visualize.
+        - Mule variable object
+## Creating Mule applications with Anypoint Studio
+- Anypoint Studio
+    - Based on the Eclipse IDE, allows you to build Mule applications either with graphical view interface or an XML editor.
+        - XML then can be executed and deployed in the Mule Runtime.
+    - Include pre-built functionality which allows you to connect to all types of APIs (REST, SOAP), protocols (HTTP, FTP, SMTP & more) and popular services (Salesforce, Workday & more).
+    - Allows you to transform data to structures
+    - Allows you to sync, edit and upload API Specifications with Anypoint Platform
+    - Can also run, debug and deploy Mulesoft applications 
+    - Be able to create common integration patterns 
+    - Utilize Maven Repositories for continuous build processes
+
+    ------
+    ### Anypoint Studio User Interface
+    ![](https://docs.mulesoft.com/studio/6/_images/blank-canvas.png) *Anypoint Studio User Interface perspective of Design*
+    - Has 3 perspectives:
+        1. Debugging perspective.
+        2. API development perspective.
+        3. Design perspective.
+            - Canvas: is meant to show the Mule flow of an application.
+                - Can display a graphic view of the application flow, or an XML file editor.
+            - Package Explorer: used to display project files.
+            - Mule Palette: display the modules added to project and each one with their processors
+            - Console: display important information like:
+        - All are customizable.
+        -----
+        ### Anatomy of a flow: Visual
+        ![](https://1.bp.blogspot.com/-W57UvZm6Qgo/Xv25YDKJFfI/AAAAAAAAKgQ/KEO5-JWCsj4WT9V2pDoNykCTzIocna0aQCLcBGAsYHQ/s1600/030201%2BAnatomy%2Bof%2Ba%2Bflow%2B-%2Bvisual.png) *Anatomy Visual Flow*
+        - As you confiigure the flow, XML code is generated in the Configuration view Tab
+        - Mule applications are built using the processors from the modules added to the Palette.
+        ------
+    ### Mule runtime embedded within Anypoint Studio to run Mule apps
+    - It is used to test applications without leaving Anypoint Studio.
+    - Helps viewing the messages generated when the project is deploying and running. 
+        - A message of **Status DEPLOYED** means you can start testing the Mule application.
+        - A message of **Status FAILED** you can scroll up in the console to check error messages
+
+## Connecting to database within Anypoint Studio 
+- It uses a `Database Connector` that can connect to almost any JDBC relational database.
+    ![](https://docs.mulesoft.com/mule-runtime/4.4/_images/studio-palette.png) *Anypoint Studio Palette*
+    - Any database engine for which you have a driver.
+    - Just add the `Database` module to the project, the connectors are the operation for the database.
+    ![](https://docs.mulesoft.com/db-connector/1.11/_images/database-select-operation-1.png)*Query a Database Examples  - Mule 4 | Mulesoft Doc*
+    
+- There is a *global configurations elements view* under the canvas
+    - Its purpose to create reusable connector configuration for most of the modules that have connections 
+    - Contain a shared configuration settings for the modules processors:
+        - When you add the Database module you will be able to perform operation on the data that contain in the various tables of the database. 
+        - For each operation you will need to specify:
+            - Name of the database.
+            - The kind of database it is.
+            - How to connect to it.
+        ![](https://dz2cdn1.dzone.com/storage/temp/9908694-db4.jpg)***Global Element Configurations tab > Global Element Properties*** *MySQL Database SELECT query operation in Mule 4*
+    - For this, it is needed to create a *global configuration element* to perform a SELECT query to a MySQL database
+        - Test Connection to verify the correct functionality.
+## Transforming Java data from Database to JSON to be consumed by REST Client
+- The purpose is to transform the `media type` that came from the query to the database to a different standard format in order to be consumed.
+- It is performed by a ``Transform Message`` connector found at the Mule Palette.
+![](https://i.stack.imgur.com/dkyXR.png)*Transform Message processor from the Mule Palette*
+
+- **Transform Message** transforms data to different types using a transformation language named **DataWeave 2.0**.
+    - It is provided with a graphical interface with payload-aware development
+    - DataWeave Playground lets developers mock data transformations based on an input payload outside Anypoint Studio in a web browser.
+        - Offers a tutorial
+        - https://developer.mulesoft.com/learn/dataweave/ *DataWeave Playground*
+    - It uses output metadata type to add in order to map the input payload to a different one
+    **Input data queried from MySQL Database**
+    ```java    
+    %dw 2.0
+    output application/java 
+    ---
+    [{
+        ID : 32,
+        code1 : "consequatur,",
+        code2 : "velit",
+        airlineName : "dolorem",
+        toAirport : "magni",
+        fromAirport : "quia",
+        takeOffDate : |2005-05-16|,
+        price : 37.13,
+        planeType : "enim",
+        seatsAvailable : 83,
+        totalSeats : 9,
+    },
+    {
+        ID : 12,
+        code1 : "nesciunt.",
+        code2 : "occaecat",
+        airlineName : "sint",
+        toAirport : "mollit",
+        fromAirport : "dolorem",
+        takeOffDate : |2019-11-06|,
+        price : 7.67,
+        planeType : "non",
+        seatsAvailable : 74,
+        totalSeats : 98,
+    }]
+    ```
+
+    **DataWeave 2.0 language within Transform Message dialogue box**
+    ```dataweave
+    %dw 2.0
+    output application/json
+    ---
+    payload map ( payload01 , indexOfPayload01 ) -> {
+        ID: payload01.ID,
+        code: (payload01.code1
+    default "") ++ (payload01.code2 default ""),
+        price: payload01.price default 0,
+        departureDate: payload01.takeOffDate as String default "",
+        origin: payload01.fromAirport default "",
+        destination: payload01.toAirport default "",
+        emptySeats: payload01.seatsAvailable default 0,
+        plane: {
+            "type": payload01.planeType default "",
+            totalSeats: payload01.totalSeats default 0
+        }
+    }
+    ``` 
+    **JSON format after transformation from Java to JSON using DataWeave 2.0 language from the Transform Message**
+    ```json
+    [
+        {
+            "ID": 1,
+            "code": "rree0001",
+            "price": 541,
+            "departureDate": "2016-01-19T18:00:00",
+            "origin": "MUA",
+            "destination": "LAX",
+            "emptySeats": 0,
+            "plane": {
+            "type": "Boeing 787",
+            "totalSeats": 200
+            }
+        },
+        {
+            "ID": 2,
+            "code": "eefd0123",
+            "price": 300,
+            "departureDate": "2016-01-24T18:00:00",
+            "origin": "MUA",
+            "destination": "CLE",
+            "emptySeats": 7,
+            "plane": {
+            "type": "Boeing 747",
+            "totalSeats": 345
+            }
+        }
+    ]
+    ```
+
+    *Note: the key-value pairs from planeType and totalSeats of the input had been reused and transform to a nested JSON object under the key "plane" of the output, thanks to DataWeave 2.0 and Transform Message Mule event proccessor*
+    
+    -----
+## Creating RESTful interfaces manually for Mule applications
+- Once having the core functionality of the Mule application implemented, now it has to be exposed as RESTful web service.
+    - *RESTful interface for an application*: will have listeners for each resource `/` method  defined by the API
+        - ``GET: /flights``
+        - ``POST: /flights/{ID}``
+        - ``DELETE: /flights/{ID}``
+        - ``PUT: /flights/{ID}``
+
+    ### Developing the listener endpoint to retrieve or input data using a URI parameter
+    - When querying a resource not develop the following error is the output from a REST Client (Advanced REST Client - ARC, Postman):
+    ![](https://help.mulesoft.com/sfc/servlet.shepherd/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0682T000009YJIX&operationContext=CHATTER&contentId=05T2T00000sITBZ)*Error example on of a non developed listener endpoint*
+
+    - Example error on Advanced REST Client when requesting ID 3 from the Flights with GET method at `http://localhost:8081/flights/3`
+        ```
+        GET /flights/3 HTTP/1.1
+        Host: localhost:8081
+        ```
+    - To solve this issue we must create an endpoint with all the previous components which were:
+        - **Mule event Source**: HTTP Listener
+        - **Mule event processors**: SELECT by ID from database connector, Transform Message (transform the output data from db on Java object format to JSON) using DataWeave 2.0.
+    - **Steps for implementing an URI Parameter based endpoint:**
+        1. Create a new flow with:
+            - HTTP Listener, with path set to `/flights/{ID}`.
+            - SELECT processor with SQL query to ID `SELECT * FROM american WHERE ID = 1` (this will always query the first element from ``db``).
+            - Transform Message processor, to set a valid format for the succesful response of the query from Java Object format to JSON.
+        2. Transform message output metadata should be define to the previously american_flights_json ( outputs only 1 flight wihtin an array) in order to display it with nested JSON format like this one when deployed and query it from a REST client:
+        ```json
+        [
+            {
+                "ID": 1,
+                "code": "rree0001",
+                "price": 541,
+                "departureDate": "2016-01-19T18:00:00",
+                "origin": "MUA",
+                "destination": "LAX",
+                "emptySeats": 0,
+                "plane": {
+                "type": "Boeing 787",
+                "totalSeats": 200
+                }
+            }
+        ]
+        ```
+        3. In order to add the logic to query the requested ID dynamically SQL Query Text and Input Parameters from the SELECT processor should be modify to:
+            - SQL Query Text:
+            ```sql
+            SELECT *
+            FROM american 
+            WHERE ID = :ID
+            ```  
+            - Input Parameters `fx` on:
+            ```js
+            {'ID': attributes.uriParams.ID}
+            ```
+            *Note: accessing to the Mule Message > Attributes > uriParams from the input Tap* allow us to access the URI Parameter we need for the ID.
+        4.- Requesting any ID using a REST client to the path, for example: ``http://localhost:8081/flights/3``; would give us any ID and its data we want.
+        *Example output data:*
+        ```json
+        [
+            {
+                "ID": 3,
+                "code": "ffee0192",
+                "price": 300,
+                "departureDate": "2016-01-19T18:00:00",
+                "origin": "MUA",
+                "destination": "LAX",
+                "emptySeats": 0,
+                "plane": {
+                "type": "Boeing 777",
+                "totalSeats": 300
+                }
+            }
+        ]
+        ```
+        -------
+        #### Developing the POST requests
+        - Creating another flow to POST or create new flights, will be using the similar configuration:
+            - HTTP Listener-*Mule event source*
+            - 
+        - **Steps to create enpoint for POST flights**:
+            1. Drag and drop, in a new flow; an HTTP Listener 
+                - Flows' display Name can set to POST_flights for easy identification.
+                - HTTP Listener *connector configuration* should be set to the existing *HTTP_Listener_config* 
+                - Set Path must be: ``/flights`
+                - within HTTP Listener, on the *Advanced* tab, *Allowe methods* must be set to `POST`
+            2. Add to the flow *Set Payload* processor, this will **output** to the REST Client console a generic and hard coded message of a flight created.
+                - within general *Set Payload* tab > settings > value > `fx` (set to literal mode):
+                    `{"message": "Flight added (but not really)"}`
+            3. Requesting POST method on REST client to the defined path (`/flights`), results on a succesful operation 200 with the response message defined before.
+
+## APIKit for generating RESTful interfaces automatically
+- APIKit and API Specification (RAML) will be used to create automatically the RESTful interfaces (endpoints, eg. GET,POST /flights and GET /flights/{ID}).
+
+    ### APIKit
+    - Is an open-source toolkit that includes an Anypoint Studio plugin 
+    - The **Anypoint Studio APIKit plugin** can generate an interface automatically from a RAML API definition
+    - It can be used for generating Mule flows for each of the message and API Specification and stored them in a new Mule configuration file.
+    - It creates a flow for the **APIKit Router and Console**  
+        - **APIKit Router**: is the main entry point to call a Mule application 
+        - **APIKit Console**: is used for testing the application just like it is on Exchange and on API Designer.
+    - The generated flows represent the RESTful API interface and can be hooked to the implementation hub using **Flows Reference Processors**. 
+    ### Using the APIKit Router to import the API Speficiation from Exchange and build the API Interfaces (GET, POST /flights endpoint)
+
+    - At the File Explorer, right click on the current project > Manage Dependencies > Manage APIs
+        - Add new dependency ➕ > From Exchange 
+        - Search for `American Flight API` and click on add, select version 1.0.1
+        - ``Apply and Close``
+        -  When asked to scaffold selecte `Yes`
+        *Note: there will be added new files to the project including ``./APIKit`` with several files as shown here:*
+            - ![](https://miro.medium.com/max/665/0*vs2o1enRx92RxiBy)
+            - Inside `./American Flights API` you will find `.raml` files that were worked on API Designer
+    - Examining the generated `american-flights-api.xml` file we cna see 4 flows:
+        - delete: /flights/{ID} 
+        - ``get: /flights`` 
+            Transform Message output preview
+            ```json
+            %dw 2.0
+            output application/json
+            ---
+            [
+            {
+                ID: 1,
+                code: "ER38sd",
+                price: 400,
+                departureDate: "2017/07/26",
+                origin: "CLE",
+                destination: "SFO",
+                emptySeats: 0,
+                plane: {
+                "type": "Boeing 737",
+                totalSeats: 150
+                }
+            }, 
+            {
+                ID: 2,
+                code: "ER45if",
+                price: 540.99,
+                departureDate: "2017/07/27",
+                origin: "SFO",
+                destination: "ORD",
+                emptySeats: 54,
+                plane: {
+                "type": "Boeing 777",
+                totalSeats: 300
+                }
+            }
+            ]
+            ```
+
+        - ``get: /flights/{ID} ``
+            Transform Message Preview
+            ```json
+            %dw 2.0
+            output application/json
+            ---
+            {
+            ID: 1,
+            code: "ER38sd",
+            price: 400,
+            departureDate: "2017/07/26",
+            origin: "CLE",
+            destination: "SFO",
+            emptySeats: 0,
+            plane: {
+                "type": "Boeing 737",
+                totalSeats: 150
+            }
+            }
+            ```
+        - post: /flights 
+            Transform Message Preview
+            ```json
+            %dw 2.0
+            output application/json
+            ---
+            {
+            message: "Flight added {but not really}"
+            }
+            ```
+            ------
+    - Examine the main flow and it's HTTP Listener
+        - HTTP Listener: in the Listener properties view, notice that the connector configuration is the existing  HTTP_Listener_config and that the path is set to ``/api/*` (when clicking on the connector configuration ➕, should see the same port 8081 used as the HTTP Listener created previously).
+        *Note: The * is a wildcard allowwing any characters to be entered after the /api/*.
+    - Removing the Listeners from the `training4-american-ws.xml`
+        - deleting the HTTP Listeners from GET, POST and GET by ID.
+    ### Using APIKit Console to test the application endpoints as on Exchange and API Designer
+    - Saving the file after been deleted the HTTP_Listeners
+    ![](https://help.mulesoft.com/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB720BY480&versionId=0682T000006LSTI&operationContext=CHATTER&contentId=05T2T00000cNPSm&page=0)*Button with URL to APIkit console web page view*
+    - Redeploying will let ``APIkit Console`` to load the changes and let you open the console for testing purposes opening a web page similar to what are found on Exchange or API Designer at http://localhost:8081/console/ .
+
+    - When testing with a REST Client, should be using http://localhost:8081/api/flights instead of http://localhost:8081/flights
+        - Since imported API Specification (american-flights-api.raml) the current path changed to `/api/*` that is the reason to use the wildcard for selecting everything that was before on the path.
+
+## Connecting the API interface (GET /flights) to the implementation flows
+![](https://docs.mulesoft.com/mule-runtime/4.4/_images/flowref-about-8b5d1.png) *Flow Reference component*
+- Large Mule flows can be broken down to multiple smaller flows to promode code reuse, it also makes them easier to read and maintain.
+
+![](https://docs.mulesoft.com/mule-runtime/4.4/_images/mruntime-flow-ref-create.png)*Flow Reference on Anypoint Studio*
+- Flows can be connected one to another using *Flow Referencess*
+    - **Flow References** are processors which can call another flow by name.
+        ![](https://miro.medium.com/max/664/1*iT9Egtm3Mfo1lriyPtgEpA.png) *How Payload, variable, and attributes behave when passing through differen flows in Anypoint Studio -Medium*
+        - When call is made, the mule event is passed to the child flow and when the child flow completes processing it passes back the mule event to the calling flow.
+    ------
+    ### Build a RESTful API for the American Flight Database by connecting the interface (GET flights) using Flow References to call the backend functionality 
+
+    - In the file explorer, rename the `american-flights-api.xml` file to ``inteface.xml``.
+    - Rename the `training4-american-ws.xml` file to `implementation.xml`
+    -----
+    ### Using a Flow reference in the /flights resource
+    - Open the `interface.xml`.
+    - Delete the Transform message component int he  ``get:\flights` flow.
+    - On the Mule Palette, drag and drop the *Flow Reference* processor to the ``get:\flights` flow.
+    - Name the *Flow Reference* to getFlights
+    *Note: make sure it links to the implementation.xml get endpoint*
+
+    ### Using a flow Reference in the /flights/{ID} resource
+    - Delete both Transform Message components in the `get:\flights\{ID}` flow.
+    - On the Mule Palette, drag and drop the *Flow Reference* processor to the ``get:\flights` flow.
+    *Note: make sure it links to the implementation.xml get  by ID endpoint*
+
+    ### Examine the referenced flows 
+    ![](https://static.wixstatic.com/media/e0d344_da3acc88f2914ceca7bf27cfdf1cb9af~mv2.png/v1/fit/w_320%2Ch_627%2Cal_c/file.png) *Contextual menu, Reference By*
+    **GET Reference By**
+    - Opening the ``implementation.xml``, and right click on the `getFlights` flow, > Referenced by > double click on the ``GET interface .xml`` file
+
+    **GET by ID Reference By**
+    - Opening the ``implementation.xml``, and right click on the `getFlights` flow, > Referenced by > double click on the ``GET by ID interface .xml`` file
+    ----
+    - Save all, re deploy, and test it with a REST client.
+        - When calling for GET flights, should have the same result as not referencing flows
+        *Example output of a reference flow call to our Mule application using REST Client*
+        ```json
+                    
+        [
+            {
+                "ID": 1,
+                "code": "rree0001",
+                "price": 541,
+                "departureDate": "2016-01-19T18:00:00",
+                "origin": "MUA",
+                "destination": "LAX",
+                "emptySeats": 0,
+                "plane": {
+                "type": "Boeing 787",
+                "totalSeats": 200
+                }
+            },
+            ......
+            
+            {
+                "ID": 10,
+                "code": "eefd4511",
+                "price": 900,
+                "departureDate": "2016-01-14T18:00:00",
+                "origin": "MUA",
+                "destination": "LAX",
+                "emptySeats": 100,
+                "plane": {
+                "type": "Boeing 777",
+                "totalSeats": 300
+                }
+            },
+            {
+                "ID": 11,
+                "code": "rree4567",
+                "price": 456,
+                "departureDate": "2016-01-19T18:00:00",
+                "origin": "MUA",
+                "destination": "SFO",
+                "emptySeats": 100,
+                "plane": {
+                "type": "Boeing 737",
+                "totalSeats": 150
+                }
+            }
+        ]
+    
+        ```
+## Synchronizing changes to API Specifications (RAML) between Anypoint Studio and Anypoint Platform
+- API Sync is a feature within Anypoint Studio that enables you to follow API lifecycle development practices by offering offline editing to API Specification from Anypoint Studio.
+    - After editing you are able to push the edited file to Design Center.
+    - Can also publish the new API asset version to Exchange.
+
+![](https://docs.mulesoft.com/studio/7.11/_images/compare-to-index-view.png)*API Design Perspective within Anypoint Studio*
+- **API Design Perspective**: includes a Git Staging tab, that lets you see changes in the editing pipeline and resolves conflicts when needed by a Git version control system.
+    - Git staging tab allows to correctly Push, pull and merge.
+
+    ### Edit an API within Anypoint Studio, push changes to Design Center 
+    - Make the imported API Specification (RAML) editable in Anypoint Studio in a new API project
+    - Open the `american-flights-api.raml`, trying to make changes should NOT be allowed to make any changes.
+    - To edit them use the contextual menu over the `american-flights-api.raml` > American Flights API > Edit API Specification.
+    - When asked to change perspective to ``API Design Perspective`` accept.
+    - **Locate the new API project created in Anypoint Studio**
+        - `./american-flights-api/american-flights-api.raml` (should have opened automatically when changing view to API Design Perspective).
+    - Add the -/{ID} Put method from ``snippets.txt``
+        ```yaml
+        * American Flights API - /{ID} PUT method
+        put:
+            body:
+                application/json:
+                    type: AmericanFlight
+                    examples:
+                        input: !include examples/AmericanFlightNoIDExample.raml
+            responses:
+                200:
+                    body:
+                        application/json:
+                        example:
+                            message: Flight updated (but not really)
+        ```
+        - Save the file.
+        - **Review the Git Staging view for the API project** > Git stagging tab.
+        - Examine the unstagged changes, you should see that the `american-flights-api.raml` it is not currently on the *Stagged Changes* area.
+        - Click in the *Add files* button ➕, to add `american-flights-api.raml` file to the stagged area
+        - Commit the changes *Added PUT method* 
+        - Push the commited changes.
+    ### Publish the modified API to Exchange from Anypoint Studio
+    - On Anypoint Studio, in the Package Explorer > right click to american-flights-api project > Manage API Specification > Publish to Exchange
+    - Set the version to `1.0.2`
+    - Click finish.
+    - Close the project and view of current project.
+    ### Update the version of the API used in the Mule project and rescaffold the flows
+    - Right click on American Flights API in the ``training-american-ws`` project and select American Flights API > Update Version > Update version > Apply and Close
+    - When promted to scaffold select 'Yes'
+    *Note: When returning to `ìnterface.xml` flows, you should now see 5 methods (GET, GET by ID, DELETE, POST, PUT)*
+
+## Sumary from Building APIs
+- **Anypoint Studio** can be used to build Mule applications for integrations and API implementations (RAML)
+    - Two way editing between graphical and XML views.
+    - An embedded Mule runtime for testing applications.
+- **Mule Applications** accept and process events through a series of event processors plugged together in a flow
+    - Use an **HTTP Listener** as an inbound endpoint (final starting point) to trigger a flow with an HTTP request.
+    - Use the **Set Payload** transformer to set the payload.
+    - Use a **Database** module with a SELECT connector to connect to JDBC databases.
+    - Use **DataWeave** and the **Transform Message** component to transform messages from one data type and sturcture to another.
+- **Create RESTful interfaces** for applications
+    - Manually by creating flows with listeners for each resource/method pairing 
+    - Automatically using Anypoint Studio and **APIkit**
+        - APIkit consists on API console and API router
+- **API Sync** uses Git digital version system to syncronize changes to API specifications between Anypoint Studio and Anypoint Platform.
+
+    ### Implementing a REST API using APIkit
+    **Objectives**
+    In this exercise, a REST API that has a RAML specification is implemented using APIkit
+    - Create a new project in Studio.
+    - Scaffold flows using the Accounts API specification.
+    - Add an implementation for the accounts retrieval method.
+    - Organize flows appropiately.
+    Tasks / Requirements
+    1. Create a new Mule project.
+    2. Use the Accounts API specification to scaffold the interface of your application.
+    3. Implement theaccounts retrievalmethod:
+        - Connect to the following database:
+            - JDBC URL: ``jdbc:mysql://mudb.learn.mulesoft.com:3306/training?user=mule&password=mule``
+            - JDBC driver: Latest version of the MySQL JDBC Driver
+                 - Hint: Search for "mysql-"
+            - JDBC class name: ``com.mysql.cj.jdbc.Driver``
+            - Table name: ``flights_customers``
+        - Transform the data returned from the database to reflect the output format in the spec.
+            - Note that it is your responsibility to create sample data for the output column in your transformation
+                - Hint: You could use the API Console to get a list of JSON objects to create the sample data
+        - Ignore the implementation of the name and account type filtering of the data for the time being, you will revisit in a future exercise4.Deploy your application.
+        - Test using a RESTful client
+    ------
+    
+
+----
+## Deploying and Managing APIs to CloudHub
+- Steps:
+    1. Deployment of the API as a Web Service.
+    2. A proxy application is deployed to API Manager and policies (restrictions of access to APIs) for security and Governance.
+## Deployement Option for Mulesoft aplications
+- *CloudHub*:  
+    - Uses Virtual Machines on Amazon Web Serices Platform.
+    - Is a component from Anypoint Platform.
+    *Bennefits*:
+    - Simplicity, Mulesoft manages all hardware and software with no maintenance to the customer
+    - Continous and scalable on servers all over the world.
+    - Mule servers are easy to install.
+- *Customer Hosted Mule Runtime*:
+    - It is hosted on customers' own machine
+    - Can also be hosted at several Cloud Service Providers.
+- *Anypoint Runtime Fabric*:
+    - Customer-hosted container service of the runtime plane.
+    - Automates orchestration of apps and API gateways.
+    

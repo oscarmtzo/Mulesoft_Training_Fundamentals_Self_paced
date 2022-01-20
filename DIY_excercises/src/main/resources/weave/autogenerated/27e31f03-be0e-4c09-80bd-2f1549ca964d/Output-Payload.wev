@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_27e31f03_be0e_4c09_80bd_2f1549ca964d_Output_Payload = Array<{  address?: String,   airMiles?: Number,   accountType?: "business" | "personal",   name?: String,   ID?: Number,   creationDate?: {    date: String,     time: String,     _?: Any  },   _?: Any}>
+

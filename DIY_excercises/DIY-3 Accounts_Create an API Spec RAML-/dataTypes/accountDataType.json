@@ -1,0 +1,20 @@
+{
+	"type": "object",
+	"properties": {
+		"ID?": "integer",
+		"name?": "string",
+		"accountType?": {
+			"type": null
+		},
+		"address?": "string",
+		"airMiles?": "integer",
+		"creationDate": {
+			"type": "object",
+			"required": false,
+			"properties": {
+				"date": "string",
+				"time": "string"
+			}
+		}
+	}
+}

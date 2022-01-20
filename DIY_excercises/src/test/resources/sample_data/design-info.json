@@ -1,0 +1,13 @@
+{
+  "sampleData": {
+    "70eb7383-dfa8-47e2-8881-6dc6ac9db6c2": {
+      "payload": "sample_data/list_java_2.dwl"
+    },
+    "8c3156cc-2636-4fa2-8be0-5c5e3e1cc4f4": {
+      "payload": "sample_data/list_java.dwl"
+    },
+    "5c7f7032-6b39-402b-a17c-0e27c436dc56": {
+      "payload": "sample_data/list_java_1.dwl"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+#%RAML 1.0
+title: Customer_accounts
+types:
+  Account: !include dataTypes/accountDataType.raml
+  AccountType: !include dataTypes/typeOfAccountdataType.raml
+/accounts:
+  get:
+    description: Retrieve a collection of frequently flight customers
+    headers:
+      user_id:
+    queryParameters: 
+      accountType: 
+        description: Filter by type of account
+        required: false
+        type: AccountType
+      name:
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            type: Account[]
+            examples:
+              output: !include accounts/accountsExampleResponseGET.raml
+
+    
+  post:
+    description: Create accounts
+    headers:
+      user_id:
+    body:
+      application/json:
+        type: Account
+        example:
+          input: !include accounts/accountExamplePost.raml
+
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message: Accounts created
+  /{ID}:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Account
+              examples:
+                output: !include /accounts/accountExamplePost.raml
+        
+
